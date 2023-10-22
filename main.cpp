@@ -13,6 +13,8 @@
 // SFML uses degrees for angles while Box2D uses radians
 #define DEG_PER_RAD 57.2957795F
 
+#define BALL_AMT 4
+#define SHRINK_GROUND true
 // Box2D world for physics simulation, gravity = 9 m/s^2
 b2World world(b2Vec2(0, -11));
 
@@ -288,7 +290,11 @@ int main()
 
     // Create a shrinker (yellow box)
     auto&& shrinker = createGround(0.0f, 0.0f, 3850.0f, 5.0f, 0.0f, sf::Color::Yellow);
+    if(SHRINK_GROUND==true){
     boxes.push_back(shrinker);
+    } else if(SHRINK_GROUND==false){
+    boxes.push_back(createGround(0.0f, 0.0f, 3850.0f, 5.0f, 0.0f, sf::Color::White));
+    }
 
     // Create a pink box below the yellow box
     // auto&& pinkBox = createBox(800, WINDOW_HEIGHT * 0.6f, 150, 5, 1.f, 0.7f, sf::Color(255, 105, 180));
@@ -325,8 +331,10 @@ int main()
                     }
                 }
                 if (isPopupActive == false) {
-                    auto&& circle = createCircle(500, WINDOW_HEIGHT * 1.02f, 12, 5.f, 0.1f, sf::Color::Red);
+                    for(int i=0;i<BALL_AMT;i++){
+                    auto&& circle = createCircle(500+(i*4), WINDOW_HEIGHT * 1.02f, 12, 5.f, 0.1f, sf::Color::Red);
                     circles.push_back(circle);
+}
                     rl = true;
                 }
             }
@@ -348,8 +356,10 @@ int main()
                     }
                 }
                 if (isPopupActive == false) {
-                    auto&& circle = createCircle(900, WINDOW_HEIGHT * 1.02f, 12, 5.f, 0.1f, sf::Color::Green);
+                    for(int i=0;i<BALL_AMT;i++){
+                    auto&& circle = createCircle(900+(i*4), WINDOW_HEIGHT * 1.02f, 12, 5.f, 0.1f, sf::Color::Green);
                     circles.push_back(circle);
+                    }
                     gl = true;
                 }
             }
@@ -371,8 +381,10 @@ int main()
                     }
                 }
                 if (isPopupActive == false) {
-                    auto&& circle = createCircle(1500, WINDOW_HEIGHT * 1.02f, 12, 5.f, 0.1f, sf::Color::Blue);
+                    for(int i=0;i<BALL_AMT;i++){
+                    auto&& circle = createCircle(1500+(i*4), WINDOW_HEIGHT * 1.02f, 12, 5.f, 0.1f, sf::Color::Blue);
                     circles.push_back(circle);
+                    }
                     bl = true;
                 }
             }
@@ -386,7 +398,8 @@ int main()
             popupClock.restart();
         }
 
-        // Check for collision between balls and yellow box
+    if(SHRINK_GROUND==true){
+            // Check for collision between balls and yellow box
         for (auto& circle : circles) {
             bool collided = false;
             for (b2ContactEdge* edge = circle.body->GetContactList(); edge; edge = edge->next) {
@@ -417,6 +430,10 @@ int main()
                 }
             }
         }
+    } else {
+
+    }
+
         lastButtonPressCount = buttonPressCount;
     }
 
